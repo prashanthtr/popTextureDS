@@ -3,7 +3,7 @@ Testing poptexture code for generating synthetic textures
 
 # User instructions
 
-  >> git clone https://github.com/popTextureDS.git
+  >> git clone https://github.com/prashanthtr/popTextureDS
   
   >> cd popTextureDS/
   
