@@ -9,10 +9,10 @@ import pop_sound
 import drip_sound
 import librosa # conda install -c conda-forge librosa
 
-sys.path.insert(1, os.path.dirname(os.path.dirname(os.path.abspath("./src/paramTest"))))
+sys.path.insert(1, os.path.dirname(os.path.abspath("./src/paramTest")))
 
 from paramManager import paramManager
-from Tf_record import tfrecordManager
+#from Tf_record import tfrecordManager
 
 print(paramManager)
 
@@ -84,7 +84,7 @@ for enumP in enumParam: # caretesian product of lists
 	print("Writing parameter files")
 	''' Create param files '''
 	for v in range(data['numVariations']):
-		pm=paramManager.paramManager(vFilesParam[v], outPath)
+		pm=paramManager(vFilesParam[v], outPath)
 		pm.initParamFiles(overwrite=True)
 		for pnum in range(len(paramArr)):
 			pm.addParam(vFilesParam[v], paramArr[pnum]['pname'], [0,data['soundDuration']], [enumP[pnum], enumP[pnum]], units=paramArr[pnum]['units'], nvals=paramArr[pnum]['nvals'], minval=paramArr[pnum]['minval'], maxval=paramArr[pnum]['maxval'])
