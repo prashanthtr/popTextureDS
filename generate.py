@@ -6,15 +6,10 @@ import itertools
 import numpy as np
 import os
 import pop_sound
-import drip_sound
 import librosa # conda install -c conda-forge librosa
 
-sys.path.insert(1, os.path.dirname(os.path.abspath("./src/paramTest")))
-
-from paramManager import paramManager
+from parammanager import paramManager
 #from Tf_record import tfrecordManager
-
-print(paramManager)
 
 paramArr = []
 data = []
@@ -41,14 +36,24 @@ for p in paramArr:
 	cartParam.append(np.linspace(p["minval"], p["maxval"], p["nvals"], endpoint=True))
 
 # read synth file
-soundSynth = eval(data['soundname'])
+#popSound = eval(data['soundname'])
+
 sr = data['samplerate']
 
 # if directory exists, then ok, or else create
-filepath = os.path.dirname(os.path.realpath(data['soundname']))
-outPath = os.path.join(filepath, data['soundname'])
-if not os.path.isdir(outPath):
-    os.mkdir(outPath)
+#filepath = os.path.dirname(os.path.realpath(data['soundname']))
+#data['soundname']
+
+# if directory exists, then ok, or else create relative to main directory
+
+filepath = data["outPath"]
+if os.path.isdir(filepath):
+	print("using filepath as outpath")
+	outPath = filepath
+else: 
+	outPath = os.path.join(os.path.dirname(os.path.realpath(__file__)), filepath) # append to directory
+	if not os.path.isdir(outPath):
+		os.mkdir(outPath)
 
 print("Enumerating parameter combinations..")
 
@@ -79,12 +84,12 @@ for enumP in enumParam: # caretesian product of lists
 		vFilesParam.append(fname + '--v-'+'{:03}'.format(v)+'.params') 
 
 	''' Synthesize wav files'''
-	soundSynth.synthesize(enumP, sr, vFilesWav, outPath, data['numVariations'], data['soundDuration'])
+	pop_sound.synthesize(enumP, sr, vFilesWav, outPath, data['numVariations'], data['soundDuration'])
 
 	print("Writing parameter files")
 	''' Create param files '''
 	for v in range(data['numVariations']):
-		pm=paramManager(vFilesParam[v], outPath)
+		pm=paramManager.paramManager(vFilesParam[v], outPath)
 		pm.initParamFiles(overwrite=True)
 		for pnum in range(len(paramArr)):
 			pm.addParam(vFilesParam[v], paramArr[pnum]['pname'], [0,data['soundDuration']], [enumP[pnum], enumP[pnum]], units=paramArr[pnum]['units'], nvals=paramArr[pnum]['nvals'], minval=paramArr[pnum]['minval'], maxval=paramArr[pnum]['maxval'])

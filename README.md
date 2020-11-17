@@ -1,5 +1,5 @@
-# popTextureTest
-Testing poptexture code for generating synthetic textures
+# popTextureDS
+Generating synthetic popTextures
 
 # User instructions
 
@@ -11,10 +11,18 @@ Testing poptexture code for generating synthetic textures
   
   >> conda activate popTextureDS
 
-  >> pip install -r requirements.txt (please run twice - due to numba dependency error)
+  >> pip install -r requirements.txt --src '.' (please run twice - due to numba dependency error)
 
-# Install jupyter notebook
-  >> pip install jupyter
+# Setup and run jupyter notebook
 
-# To start jupyter notebook
+>> pip install jupyter
+
 >> python -m ipykernel install --user --name popTextureDS
+
+>> jupyter notebook
+
+>> Select *popTexture-notebook.ipynb* in the browser interface
+
+# Generate files from commandline
+
+>> python generate.py config_file.json
