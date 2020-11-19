@@ -84,11 +84,12 @@ for enumP in enumParam: # caretesian product of lists
 		vFilesParam.append(fname + '--v-'+'{:03}'.format(v)+'.params') 
 
 	''' Synthesize wav files'''
-	pop_sound.synthesize(enumP, sr, vFilesWav, outPath, data['numVariations'], data['soundDuration'])
+	varDurationSecs=data["soundDuration"]/data["numVariations"]  #No need to florring this?
+	sig = pop_sound.generate_events(enumP, sr, data["soundDuration"])
 
-	print("Writing parameter files")
 	''' Create param files '''
 	for v in range(data['numVariations']):
+		pop_sound.synthesize(sig, vFilesWav[v], outPath, sr, v, varDurationSecs)
 		pm=paramManager.paramManager(vFilesParam[v], outPath)
 		pm.initParamFiles(overwrite=True)
 		for pnum in range(len(paramArr)):

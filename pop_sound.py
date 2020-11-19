@@ -102,12 +102,12 @@ def addin(a,b,startsamp) :
     b[startsamp:startsamp+len(a)]=[sum(x) for x in zip(b[startsamp:startsamp+len(a)], a)]
     return b
 
-''' 
-Takes a parameter triplet and produces a sound
+'''
+Generic stochastic event generator with 3 parameters
+Takes 3 parameters and produces sound events as specified by sound model
 p1: rate, p2: irregularity, p3: cf
 '''
-def synthesize(parameters, sr, fname, outDir, numVariations, soundDurationSecs=4):
-
+def	generate_events(parameters, sr, soundDurationSecs=4):
 	r_exp = parameters[0]
 	irreg_exp = parameters[1]
 	cf_exp = parameters[2]
@@ -121,24 +121,24 @@ def synthesize(parameters, sr, fname, outDir, numVariations, soundDurationSecs=4
 	linspacesteps=int(eps*soundDurationSecs)
 	linspacedur = linspacesteps/eps
 
-	varDurationSecs=math.floor(soundDurationSecs/numVariations)
-	variationSamples=sr*varDurationSecs
-
-	# Rate and irregularity control the event generation. 
 	eventtimes=[(x+np.random.normal(scale=sd))%soundDurationSecs for x in np.linspace(0, linspacedur, linspacesteps, endpoint=False)]
 
-	print("Writing Wav files with Rate: ", eps, " Irregularity: ", sd, " and Central frequency: ", cf)
+	# Central frequency controls the Central frequency of bandpass filter
+	return elist2signal(eventtimes, soundDurationSecs, sr, cf,  50)
 
-	for v in range(numVariations):
-	        
-		# Central frequency controls the Central frequency of bandpass filter
-		sig = elist2signal(eventtimes, soundDurationSecs, sr, cf,  50)
+''' 
+Chunks procedurally generated signal into N variations and stores as wav files in specified output directory 
+'''
+def synthesize(sig, fname, outDir, sr, varNum, varDurationSecs):
 
-        #print("Writing training files with Rate: ", eps, " Irregularity: ", sd, " and Central frequency: ", cf)
+	variationSamples=math.floor(sr*varDurationSecs)
 
-		# print(fname)
-		sf.write(outDir + fname[v], sig[v*variationSamples:(v+1)*variationSamples], sr)
+	# Rate and irregularity control the event generation. 
+	# print("Writing Wav files with Rate: ", eps, " Irregularity: ", sd, " and Central frequency: ", cf)
+    #print("Writing training files with Rate: ", eps, " Irregularity: ", sd, " and Central frequency: ", cf)
 
+	print("Printing", fname)
+	sf.write(outDir + fname, sig[varNum*variationSamples:(varNum+1)*variationSamples], sr)
 
 #Command-line Stub
 #print(sys.argv[1])
