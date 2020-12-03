@@ -1,4 +1,4 @@
-x
+
 # dependencies for file reading
 import json
 import sys
@@ -9,9 +9,8 @@ import soundfile as sf
 
 import librosa # conda install -c conda-forge librosa
 
-from pop_sound import MyPop
 from parammanager import paramManager
-from generic_sound import generic_synth
+import synthInterface as SI
 from myPopPatternSynth import MyPopPatternSynth
 from filewrite import sound2File
 
@@ -45,7 +44,7 @@ paramArr = []
 data = []
 
 ''' Initialize generic synthesizer that uses the sound model '''
-gs = generic_synth(soundModel)
+# gs = generic_synth(soundModel)
 
 
 barsynth=MyPopPatternSynth()
@@ -59,27 +58,13 @@ with open(sys.argv[1]) as json_file:
 		#	    print("Formula: " + p['formula'])
 	    p['formula'] = eval("lambda *args: " + p['formula'])
 	    paramArr.append(p)
-	gs.setParam(data['params'])
-
-getParams = gs.getParam()
-print(getParams)
-
-cartParam = []
-
-for p in paramArr:
-	cartParam.append(np.linspace(p["minval"], p["maxval"], p["nvals"], endpoint=True))
-
-# read synth file
-#popSound = eval(data['soundname'])
 
 sr = data['samplerate']
 
-# if directory exists, then ok, or else create
-#filepath = os.path.dirname(os.path.realpath(data['soundname']))
-#data['soundname']
 
-wavHandle = sound2File(data["outPath"], ".wav") # initializes out directory
-paramHandle = sound2File(data["outPath"], ".params") # initializes out directory
+'''Initializes file through a filemanager'''
+wavHandle = sound2File(data["outPath"], ".wav")
+paramHandle = sound2File(data["outPath"], ".params")
 
 print("Enumerating parameter combinations..")
 
@@ -90,9 +75,12 @@ print("Enumerating parameter combinations..")
 		Create variation parameter files
 '''
 
-enumParam = list(itertools.product(*cartParam))
+cartParam = []
 
-#print("Combination of parameters")
+for p in paramArr:
+        cartParam.append(np.linspace(p["minval"], p["maxval"], p["nvals"], endpoint=True))
+
+enumParam = list(itertools.product(*cartParam))
 
 for enumP in enumParam: # caretesian product of lists
 
@@ -105,23 +93,23 @@ for enumP in enumParam: # caretesian product of lists
 
         barsig=barsynth.generate(data["soundDuration"])
 
-	varDurationSecs=data["soundDuration"]/data["numVariations"]  #No need to floor this?
-	#sig = gs.synthesize(enumP, sr, data["soundDuration"])
+        varDurationSecs=data["soundDuration"]/data["numVariations"]  #No need to floor this?
 
-	for v in range(data['numVariations']):
+        for v in range(data['numVariations']):
 
                 '''Write wav'''
                 wavHandle.__makeName__(data['soundname'], paramArr, enumP, v)
-		chunkedAudio = SI.selectVariation(sig, sr, v, varDurationSecs)
+                chunkedAudio = SI.selectVariation(barsig, sr, v, varDurationSecs)
                 wavHandle.__writeFile__(chunkedAudio, sr)
 
-                '''Write param'''
+                '''Write params'''
                 paramHandle.__makeName__(data['soundname'], paramArr, enumP, v)
 
-		pm=paramManager.paramManager(paramHandle.__getFile__(), paramHandle.__getOutpath__())
-		pm.initParamFiles(overwrite=True)
-		for pnum in range(len(paramArr)):
-			pm.addParam(vFilesParam[v], paramArr[pnum]['pname'], [0,data['soundDuration']], [enumP[pnum], enumP[pnum]], units=paramArr[pnum]['units'], nvals=paramArr[pnum]['nvals'], minval=paramArr[pnum]['minval'], maxval=paramArr[pnum]['maxval'])
+                pfName = paramHandle.__getFile__()
+                pm=paramManager.paramManager(pfName, paramHandle.__getOutpath__())
+                pm.initParamFiles(overwrite=True)
+                for pnum in range(len(paramArr)):
+                        pm.addParam(pfName, paramArr[pnum]['pname'], [0,data['soundDuration']], [enumP[pnum], enumP[pnum]], units=paramArr[pnum]['units'], nvals=paramArr[pnum]['nvals'], minval=paramArr[pnum]['minval'], maxval=paramArr[pnum]['maxval'])
 
                 '''write TF record'''
 

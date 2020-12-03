@@ -1,6 +1,6 @@
 # Generic sound class to store sound synthesizer files
 import numpy as np
-
+import math
 
 class MyParam():
 	def __init__(self,name,min,max, val, cb) :
@@ -110,8 +110,7 @@ def addin(a,b,startsamp) :
     b[startsamp:startsamp+len(a)]=[sum(x) for x in zip(b[startsamp:startsamp+len(a)], a)]
     return b
 
-
- ''' Returns a chunked wav files from generated signal '''
- def selectVariation(self, sig, sr, varNum, varDurationSecs):
-         variationSamples=math.floor(sr*varDurationSecs)
-         return self.sig[varNum*variationSamples:(varNum+1)*variationSamples]
+''' Returns a chunked wav files from generated signal '''
+def selectVariation(sig, sr, varNum, varDurationSecs):
+        variationSamples=math.floor(sr*varDurationSecs)
+        return sig[varNum*variationSamples:(varNum+1)*variationSamples]
