@@ -1,17 +1,17 @@
 {
-	
+
 	"soundname": "pop_sound",
 	"samplerate": 16000,
-	"format": "params", 
+	"format": "params",
 	"numVariations": 2,
 	"soundDuration": 4,
 	"outPath": "pop_sound",
-	"params": 
+	"params":
 	[
 		{
 			"pname": "rate",
 			"minval": 0,
-			"maxval": 4,
+			"maxval": 3,
 			"nvals": 2,
 			"units": "rate = 2*exp",
 			"formula": "2**args[0]"

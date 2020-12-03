@@ -17,7 +17,6 @@ from filewrite import sound2File
 #from Tf_record import tfrecordManager
 
 '''
-
 This code will generate a dataset of textures consiting of pops. A 'pop' is a burst of noise filtered by a bandpass filter.
 
 The files are generated using 3 different parameters that are sampled over a range of values. The three parameters affect:
@@ -43,21 +42,13 @@ If each variation is 2 seconds, then there will be 10/2=5 variations for each pa
 paramArr = []
 data = []
 
-''' Initialize generic synthesizer that uses the sound model '''
-# gs = generic_synth(soundModel)
-
-
-barsynth=MyPopPatternSynth()
 
 with open(sys.argv[1]) as json_file:
 	data = json.load(json_file)
 	print("Reading parameters for generating ", data['soundname'], " texture.. ")
 	for p in data['params']:
-		#	    print('Name: ' + p['pname'])
-		#	    print('Units: ' + p['units'])
-		#	    print("Formula: " + p['formula'])
-	    p['formula'] = eval("lambda *args: " + p['formula'])
-	    paramArr.append(p)
+                p['formula'] = eval("lambda *args: " + p['formula'])
+                paramArr.append(p)
 
 sr = data['samplerate']
 
@@ -85,10 +76,11 @@ enumParam = list(itertools.product(*cartParam))
 for enumP in enumParam: # caretesian product of lists
 
         #set parameters
+        barsynth=MyPopPatternSynth()
 
         barsynth.setParam("rate_exp", enumP[0]) # will make 2^1 events per second
         barsynth.setParam("irreg_exp", enumP[1])
-        barsynth.setParam("cf", enumP[2])
+        #barsynth.setParam("cf", enumP[2])
         barsynth.setParam("Q", 40)
 
         barsig=barsynth.generate(data["soundDuration"])
