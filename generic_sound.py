@@ -16,7 +16,7 @@ getParams () To get the list of parameters and their ranges
 '''
 
 class generic_synth() :
-    
+
     def __init__(self, soundModel) :
         self.params = []
         self.makeSingleEvent = soundModel # makes a single event
