@@ -12,7 +12,6 @@ class sound2File():
         self.fname=""
         # if directory exists, then ok, or else create relative to main directory
         if os.path.isdir(outpath):
-            print("using filepath as outpath")
             self.outpath = outpath
         else:
             self.outpath = os.path.join(os.path.dirname(os.path.realpath(__file__)), outpath)

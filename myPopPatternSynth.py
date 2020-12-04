@@ -11,7 +11,6 @@ class MyPopPatternSynth(SI.MySoundModel) :
 
                 SI.MySoundModel.__init__(self)
 		#create a dictionary of the parameters this synth will use
-                print("Printing", cf, " Q ",  Q)
                 self.__addParam__("cf", 100, 2000, cf,
 			lambda v :
 				self.evSynth.setParam('f0', v))
@@ -27,7 +26,6 @@ class MyPopPatternSynth(SI.MySoundModel) :
 		Override of base model method
 	'''
 	def generate(self,  durationSecs) :
-                print(self.getParam("rate_exp"), self.getParam("irreg_exp"))
                 elist=SI.noisySpacingTimeList(self.getParam("rate_exp"), self.getParam("irreg_exp"), durationSecs)
                 return self.elist2signal(elist, durationSecs)
 
@@ -36,7 +34,6 @@ class MyPopPatternSynth(SI.MySoundModel) :
 	def elist2signal(self, elist, sigLenSecs) :
                 numSamples=self.sr*sigLenSecs
                 sig=np.zeros(sigLenSecs*self.sr)
-                print(len(elist))
                 for nf in elist :
                         startsamp=int(round(nf*self.sr))%numSamples
                         # create some deviation in center frequency
