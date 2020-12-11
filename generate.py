@@ -54,8 +54,7 @@ sr = data['samplerate']
 
 
 '''Initializes file through a filemanager'''
-wavHandle = sound2File(data["outPath"], ".wav")
-paramHandle = sound2File(data["outPath"], ".params")
+fileHandle = fileHandler()
 
 print("Enumerating parameter combinations..")
 
@@ -80,7 +79,7 @@ for enumP in enumParam: # caretesian product of lists
 
         barsynth.setParam("rate_exp", enumP[0]) # will make 2^1 events per second
         barsynth.setParam("irreg_exp", enumP[1])
-        #barsynth.setParam("cf", enumP[2])
+        #barsynth.setParamNorm("cf", enumP[2])
         barsynth.setParam("Q", 40)
 
         barsig=barsynth.generate(data["soundDuration"])
@@ -90,14 +89,15 @@ for enumP in enumParam: # caretesian product of lists
         for v in range(data['numVariations']):
 
                 '''Write wav'''
-                wavHandle.__makeName__(data['soundname'], paramArr, enumP, v)
+                wavName = fileHandle.makeName(data['soundname'], paramArr, enumP, v)
+                wavPath = fileHandle.makeFullPath(data["outPath"],wavName,".wav")
                 chunkedAudio = SI.selectVariation(barsig, sr, v, varDurationSecs)
-                wavHandle.__writeFile__(chunkedAudio, sr)
+                sf.write(wavPath, chunkedAudio, sr)
 
                 '''Write params'''
-                paramHandle.__makeName__(data['soundname'], paramArr, enumP, v)
+                paramName = fileHandle.makeName(data['soundname'], paramArr, enumP, v)
+                pfName = fileHandle.makeFullPath(data["outPath"], paramName,".params")
 
-                pfName = paramHandle.__getFile__()
                 pm=paramManager.paramManager(pfName, paramHandle.__getOutpath__())
                 pm.initParamFiles(overwrite=True)
                 for pnum in range(len(paramArr)):
