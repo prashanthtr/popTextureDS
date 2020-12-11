@@ -12,7 +12,7 @@ import librosa # conda install -c conda-forge librosa
 from parammanager import paramManager
 import synthInterface as SI
 from myPopPatternSynth import MyPopPatternSynth
-from filewrite import sound2File
+from filewrite import fileHandler
 
 #from Tf_record import tfrecordManager
 
@@ -98,7 +98,8 @@ for enumP in enumParam: # caretesian product of lists
                 paramName = fileHandle.makeName(data['soundname'], paramArr, enumP, v)
                 pfName = fileHandle.makeFullPath(data["outPath"], paramName,".params")
 
-                pm=paramManager.paramManager(pfName, paramHandle.__getOutpath__())
+                pm=paramManager.paramManager(pfName, fileHandle.getFullPath())
+
                 pm.initParamFiles(overwrite=True)
                 for pnum in range(len(paramArr)):
                         pm.addParam(pfName, paramArr[pnum]['pname'], [0,data['soundDuration']], [enumP[pnum], enumP[pnum]], units=paramArr[pnum]['units'], nvals=paramArr[pnum]['nvals'], minval=paramArr[pnum]['minval'], maxval=paramArr[pnum]['maxval'])
