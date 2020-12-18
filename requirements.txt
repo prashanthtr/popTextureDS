@@ -110,3 +110,4 @@ wheel==0.35.1
 widgetsnbextension==3.5.1
 wrapt==1.12.1
 -e git+https://github.com/prashanthtr/paramManager#egg=paramManager
+-e git+https://github.com/prashanthtr/genericSynth@v1.0.2#egg=genericSynth

@@ -4,12 +4,12 @@ from scipy import signal
 import math
 #import sys
 
-from synthInterface import MySoundModel
+from genericsynth import synthInterface as SI
 
-class MyPop(MySoundModel) :
+class MyPop(SI.MySoundModel) :
 
 	def __init__(self, f0=440, Q=10) :
-		MySoundModel.__init__(self)
+		SI.MySoundModel.__init__(self)
 		#create a dictionary of the parameters this synth will use
 		self.__addParam__("f0", 100, 2000, f0)
 		self.__addParam__("Q", .1, 50, Q)
@@ -46,3 +46,9 @@ class MyPop(MySoundModel) :
 			tick = tick*.9/maxfsignal
 
 		return tick
+
+	'''Print all the parameters and their ranges from the synth'''
+	def printParams(self):
+		paramVals = self.paramProps()
+		for params in paramVals:
+			print( "Name: ", params.name, " Default value : ", params.val, " Max value ", params.max, " Min value ", params.min )

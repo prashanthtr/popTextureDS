@@ -10,7 +10,7 @@ import soundfile as sf
 import librosa # conda install -c conda-forge librosa
 
 from parammanager import paramManager
-import synthInterface as SI
+from genericsynth import synthInterface as SI
 from myPopPatternSynth import MyPopPatternSynth
 from filewrite import fileHandler
 
