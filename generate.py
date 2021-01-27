@@ -1,4 +1,3 @@
-
 # dependencies for file reading
 import json
 import sys
@@ -10,6 +9,8 @@ import soundfile as sf
 import librosa # conda install -c conda-forge librosa
 
 from parammanager import paramManager
+from sonyganformat import sonyGanJson
+
 from genericsynth import synthInterface as SI
 from myPopPatternSynth import MyPopPatternSynth
 from filewrite import fileHandler
@@ -52,6 +53,8 @@ with open(sys.argv[1]) as json_file:
 
 sr = data['samplerate']
 
+''' OUtput type for parameters: 0 for params, 1 for sonyGan and 2 for tfrecords'''
+outType = 0 if len(sys.argv) <= 2 else int(sys.argv[2])
 
 '''Initializes file through a filemanager'''
 fileHandle = fileHandler()
@@ -72,14 +75,16 @@ for p in paramArr:
 
 enumParam = list(itertools.product(*cartParam))
 
+sg = sonyGanJson.SonyGanJson(data['soundname'],1, 16000, "POPTextureDS")
+
 for enumP in enumParam: # caretesian product of lists
 
         #set parameters
         barsynth=MyPopPatternSynth()
 
-        barsynth.setParam("rate_exp", enumP[0]) # will make 2^1 events per second
-        barsynth.setParam("irreg_exp", enumP[1])
-        #barsynth.setParamNorm("cf", enumP[2])
+        barsynth.setParamNorm("rate_exp", enumP[0]) # will make 2^1 events per second
+        barsynth.setParamNorm("irreg_exp", enumP[1])
+        barsynth.setParamNorm("cf_exp", enumP[2])
         barsynth.setParam("Q", 40)
 
         barsig=barsynth.generate(data["soundDuration"])
@@ -98,12 +103,20 @@ for enumP in enumParam: # caretesian product of lists
                 paramName = fileHandle.makeName(data['soundname'], paramArr, enumP, v)
                 pfName = fileHandle.makeFullPath(data["outPath"], paramName,".params")
 
-                pm=paramManager.paramManager(pfName, fileHandle.getFullPath())
+                if outType == "paramManager" or outType==0:
+                    pm=paramManager.paramManager(pfName, fileHandle.getFullPath())
+                    pm.initParamFiles(overwrite=True)
+                    for pnum in range(len(paramArr)):
+                            pm.addParam(pfName, paramArr[pnum]['pname'], [0,data['soundDuration']], [enumP[pnum], enumP[pnum]], units=paramArr[pnum]['units'], nvals=paramArr[pnum]['nvals'], minval=paramArr[pnum]['minval'], maxval=paramArr[pnum]['maxval'])
 
-                pm.initParamFiles(overwrite=True)
-                for pnum in range(len(paramArr)):
-                        pm.addParam(pfName, paramArr[pnum]['pname'], [0,data['soundDuration']], [enumP[pnum], enumP[pnum]], units=paramArr[pnum]['units'], nvals=paramArr[pnum]['nvals'], minval=paramArr[pnum]['minval'], maxval=paramArr[pnum]['maxval'])
+                elif outType == "sonyGan" or outType == 1:
 
+                    sg.storeSingleRecord(wavName)
+                    for pnum in range(len(paramArr)):
+                        sg.addParams(wavName, paramArr[pnum]['pname'], enumP[pnum], barsynth.getParam(paramArr[pnum]['pname']+"_exp"))
+                    sg.write2File("sonyGan.json")
+                else:
+                    print("Tfrecords")
                 '''write TF record'''
 
 		#tfm=tfrecordManager.tfrecordManager(vFilesParam[v], outPath)

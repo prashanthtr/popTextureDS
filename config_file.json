@@ -10,8 +10,8 @@
 	[
 		{
 			"pname": "rate",
-			"minval": 0,
-			"maxval": 3,
+			"minval": 0.5,
+			"maxval": 0.75,
 			"nvals": 2,
 			"units": "rate = 2*exp",
 			"formula": "2**args[0]"
@@ -26,8 +26,8 @@
 		},
 		{
 			"pname": "cf",
-        	"minval": 0,
-    	    "maxval": 1,
+        	"minval": 0.25,
+    	    "maxval": 0.75,
 	        "nvals": 2,
 			"nargs": 1,
 	        "units": "Frequency",

@@ -25,4 +25,6 @@ Generating synthetic popTextures
 
 # Generate files from commandline
 
->> python3 generate.py config_file.json
+>> python3 generate.py config_file.json <outType>
+
+>> OutType: 0 (*paramManager*), 1 (*SonyGan*) and 2 (*Tfrecords*)
