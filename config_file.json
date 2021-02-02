@@ -6,7 +6,7 @@
 	"soundDuration": 4,
 	"outPath": "pop_sound",
 	"recordFormat": "params",
-	"paramRange": "Norm",
+	"paramRange": "Natural",
 	"params":
 	[
 		{

@@ -128,6 +128,13 @@ for index in range(len(userParam)): # caretesian product of lists
                     pm.initParamFiles(overwrite=True)
                     for pnum in range(len(paramArr)):
                             pm.addParam(pfName, paramArr[pnum]['pname'], [0,soundDuration], [userP[pnum], userP[pnum]], units=paramArr[pnum]['units'], nvals=paramArr[pnum]['nvals'], minval=paramArr[pnum]['minval'], maxval=paramArr[pnum]['maxval'], origUnits=None, origMinval=barsynth.getParam(paramArr[pnum]['pname']+"_exp", "min"), origMaxval=barsynth.getParam(paramArr[pnum]['pname']+"_exp", "max"))
+                            if paramRange == "Norm":
+                                pm.addMetaParam(pfName, paramArr[pnum]['pname'], {"user": "User maps parameters in Normalized units from 0 to 1", "synth": "Synth maps parameters from " + str(paramArr[pnum]['minval']) + " to " + str(paramArr[pnum]['maxval'])})
+                                # pm.addMetaParam(pfName, paramArr[pnum]['pname']+"_synth", "Synth parameters in Normalized units from " + str(paramArr[pnum]['minval']) + " to " + str(paramArr[pnum]['maxval']))
+                            else:
+                                pm.addMetaParam(pfName, paramArr[pnum]['pname'], {"user": "User parameters in " + paramRange + " units from " + str(paramArr[pnum]['minval']) + " to " + str(paramArr[pnum]['maxval']), "synth": "Synth parameters in " + paramRange + " units from " + str(paramArr[pnum]['minval']*barsynth.getParam(paramArr[pnum]['pname']+"_exp", "min")) + " to " + str(paramArr[pnum]['maxval']*barsynth.getParam(paramArr[pnum]['pname']+"_exp", "max"))})
+                                # pm.addMetaParam(pfName, paramArr[pnum]['pname']+"_user", "User parameters in " + paramRange + " units from " + paramArr[pnum]['minval'] + " to " + paramArr[pnum]['maxval'])
+                                # pm.addMetaParam(pfName, paramArr[pnum]['pname']+"_synth", "Synth parameters in " + paramRange + " units from " + barsynth.getParam(paramArr[pnum]['pname']+"_exp", "min") + " to " + barsynth.getParam(paramArr[pnum]['pname']+"_exp", "max"))
 
                 elif recordFormat == "sonyGan" or outType == 1:
 
