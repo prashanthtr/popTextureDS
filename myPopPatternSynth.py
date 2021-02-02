@@ -7,7 +7,7 @@ from myPop import MyPop  # This is "event" synthesizer this pattern synth will u
 ################################################################################################################
 class MyPopPatternSynth(SI.MySoundModel) :
 
-	def __init__(self, cf=440, Q=10, rate_exp=0, irreg_exp=1) :
+	def __init__(self, cf=440, Q=40, rate_exp=0, irreg_exp=1) :
 
                 SI.MySoundModel.__init__(self)
 		#create a dictionary of the parameters this synth will use

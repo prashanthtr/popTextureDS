@@ -52,9 +52,12 @@ with open(sys.argv[1]) as json_file:
                 paramArr.append(p)
 
 sr = data['samplerate']
-
-''' OUtput type for parameters: 0 for params, 1 for sonyGan and 2 for tfrecords'''
-outType = 0 if len(sys.argv) <= 2 else int(sys.argv[2])
+soundName = data["soundname"]
+outPath = data["outPath"]
+recordFormat = data["recordFormat"]
+paramRange = data["paramRange"]
+soundDuration = data["soundDuration"]
+numVariations = data["numVariations"]
 
 '''Initializes file through a filemanager'''
 fileHandle = fileHandler()
@@ -63,57 +66,74 @@ print("Enumerating parameter combinations..")
 
 '''
 	for every combination of cartesian parameter
-	for every variation
+    for every variation
 		Create variation wav files
 		Create variation parameter files
 '''
 
-cartParam = []
+'''2 arrays for normalised and naturalised ranges'''
+userRange = []
+synthRange = []
 
-for p in paramArr:
-        cartParam.append(np.linspace(p["minval"], p["maxval"], p["nvals"], endpoint=True))
+if paramRange == "Norm":
+    for p in paramArr:
+        userRange.append(np.linspace(p["minval"], p["maxval"], p["nvals"], endpoint=True))    
+    for p in paramArr:
+        synthRange.append(np.linspace(p["minval"], p["maxval"], p["nvals"], endpoint=True))
+else:
+    for p in paramArr:
+        userRange.append(np.linspace(p["minval"], p["maxval"], p["nvals"], endpoint=True))    
+    for p in paramArr:
+        synthRange.append(np.linspace(p["minval"], p["maxval"], p["nvals"], endpoint=True))
 
-enumParam = list(itertools.product(*cartParam))
+userParam = list(itertools.product(*userRange))
+synthParam = list(itertools.product(*synthRange))
 
 sg = sonyGanJson.SonyGanJson(data['soundname'],1, 16000, "POPTextureDS")
 
-for enumP in enumParam: # caretesian product of lists
+for index in range(len(userParam)): # caretesian product of lists
+
+        userP = userParam[index]
+        synthP = synthParam[index]
 
         #set parameters
         barsynth=MyPopPatternSynth()
 
-        barsynth.setParamNorm("rate_exp", enumP[0]) # will make 2^1 events per second
-        barsynth.setParamNorm("irreg_exp", enumP[1])
-        barsynth.setParamNorm("cf_exp", enumP[2])
-        barsynth.setParam("Q", 40)
+        if paramRange == "Norm":
+            barsynth.setParamNorm("rate_exp", synthP[0]) # will make 2^1 events per second
+            barsynth.setParamNorm("irreg_exp", synthP[1])
+            barsynth.setParamNorm("cf_exp", synthP[2])
+        else:
+            barsynth.setParam("rate_exp", synthP[0]) # will make 2^1 events per second
+            barsynth.setParam("irreg_exp", synthP[1])
+            barsynth.setParam("cf_exp", synthP[2])
 
-        barsig=barsynth.generate(data["soundDuration"])
+        barsig=barsynth.generate(soundDuration)
+        varDurationSecs=soundDuration/numVariations  #No need to floor this?
 
-        varDurationSecs=data["soundDuration"]/data["numVariations"]  #No need to floor this?
-
-        for v in range(data['numVariations']):
+        for v in range(numVariations):
 
                 '''Write wav'''
-                wavName = fileHandle.makeName(data['soundname'], paramArr, enumP, v)
-                wavPath = fileHandle.makeFullPath(data["outPath"],wavName,".wav")
+                wavName = fileHandle.makeName(soundName, paramArr, userP, v)
+                wavPath = fileHandle.makeFullPath(outPath,wavName,".wav")
                 chunkedAudio = SI.selectVariation(barsig, sr, v, varDurationSecs)
                 sf.write(wavPath, chunkedAudio, sr)
 
                 '''Write params'''
-                paramName = fileHandle.makeName(data['soundname'], paramArr, enumP, v)
-                pfName = fileHandle.makeFullPath(data["outPath"], paramName,".params")
+                paramName = fileHandle.makeName(soundName, paramArr, userP, v)
+                pfName = fileHandle.makeFullPath(outPath, paramName,".params")
 
-                if outType == "paramManager" or outType==0:
+                if recordFormat == "params" or recordFormat==0:
                     pm=paramManager.paramManager(pfName, fileHandle.getFullPath())
                     pm.initParamFiles(overwrite=True)
                     for pnum in range(len(paramArr)):
-                            pm.addParam(pfName, paramArr[pnum]['pname'], [0,data['soundDuration']], [enumP[pnum], enumP[pnum]], units=paramArr[pnum]['units'], nvals=paramArr[pnum]['nvals'], minval=paramArr[pnum]['minval'], maxval=paramArr[pnum]['maxval'])
+                            pm.addParam(pfName, paramArr[pnum]['pname'], [0,soundDuration], [userP[pnum], userP[pnum]], units=paramArr[pnum]['units'], nvals=paramArr[pnum]['nvals'], minval=paramArr[pnum]['minval'], maxval=paramArr[pnum]['maxval'], origUnits=None, origMinval=barsynth.getParam(paramArr[pnum]['pname']+"_exp", "min"), origMaxval=barsynth.getParam(paramArr[pnum]['pname']+"_exp", "max"))
 
-                elif outType == "sonyGan" or outType == 1:
+                elif recordFormat == "sonyGan" or outType == 1:
 
                     sg.storeSingleRecord(wavName)
                     for pnum in range(len(paramArr)):
-                        sg.addParams(wavName, paramArr[pnum]['pname'], enumP[pnum], barsynth.getParam(paramArr[pnum]['pname']+"_exp"))
+                        sg.addParams(wavName, paramArr[pnum]['pname'], userP[pnum], barsynth.getParam(paramArr[pnum]['pname']+"_exp"))
                     sg.write2File("sonyGan.json")
                 else:
                     print("Tfrecords")

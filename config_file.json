@@ -2,10 +2,11 @@
 
 	"soundname": "pop_sound",
 	"samplerate": 16000,
-	"format": "params",
 	"numVariations": 2,
 	"soundDuration": 4,
 	"outPath": "pop_sound",
+	"recordFormat": "params",
+	"paramRange": "Norm",
 	"params":
 	[
 		{
