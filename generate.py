@@ -129,10 +129,16 @@ for index in range(len(userParam)): # caretesian product of lists
                     for pnum in range(len(paramArr)):
                             pm.addParam(pfName, paramArr[pnum]['pname'], [0,soundDuration], [userP[pnum], userP[pnum]], units=paramArr[pnum]['units'], nvals=paramArr[pnum]['nvals'], minval=paramArr[pnum]['minval'], maxval=paramArr[pnum]['maxval'], origUnits=None, origMinval=barsynth.getParam(paramArr[pnum]['pname']+"_exp", "min"), origMaxval=barsynth.getParam(paramArr[pnum]['pname']+"_exp", "max"))
                             if paramRange == "Norm":
-                                pm.addMetaParam(pfName, paramArr[pnum]['pname'], {"user": "User maps parameters in Normalized units from 0 to 1", "synth": "Synth maps parameters from " + str(paramArr[pnum]['minval']) + " to " + str(paramArr[pnum]['maxval'])})
+                                synthmin = barsynth.getParam(paramArr[pnum]['pname']+"_exp", "min")
+                                synthmax = barsynth.getParam(paramArr[pnum]['pname']+"_exp", "max")
+                                pm.addMetaParam(pfName, paramArr[pnum]['pname'], 
+                                    {
+                                    "user": "User maps parameters in Normalized units from 0-1 to " + str(paramArr[pnum]['minval']) + "-" + str(paramArr[pnum]['maxval']), 
+                                    "synth": "Synth maps parameters from " + str(paramArr[pnum]['minval']) + "-" + str(paramArr[pnum]['maxval']) + " to " + str(synthmin + paramArr[pnum]['minval']*(synthmax-synthmin)) + "-" + str(synthmin + paramArr[pnum]['maxval']*(synthmax-synthmin))
+                                    })
                                 # pm.addMetaParam(pfName, paramArr[pnum]['pname']+"_synth", "Synth parameters in Normalized units from " + str(paramArr[pnum]['minval']) + " to " + str(paramArr[pnum]['maxval']))
                             else:
-                                pm.addMetaParam(pfName, paramArr[pnum]['pname'], {"user": "User parameters in " + paramRange + " units from " + str(paramArr[pnum]['minval']) + " to " + str(paramArr[pnum]['maxval']), "synth": "Synth parameters in " + paramRange + " units from " + str(paramArr[pnum]['minval']*barsynth.getParam(paramArr[pnum]['pname']+"_exp", "min")) + " to " + str(paramArr[pnum]['maxval']*barsynth.getParam(paramArr[pnum]['pname']+"_exp", "max"))})
+                                pm.addMetaParam(pfName, paramArr[pnum]['pname'], {"user": "User maps " + paramRange + " units from " + str(paramArr[pnum]['minval']) + "->" + str(paramArr[pnum]['maxval']), "synth": "Synth maps in " + paramRange + " units from " + str(paramArr[pnum]['minval']) + "->" + str(paramArr[pnum]['maxval'])})
                                 # pm.addMetaParam(pfName, paramArr[pnum]['pname']+"_user", "User parameters in " + paramRange + " units from " + paramArr[pnum]['minval'] + " to " + paramArr[pnum]['maxval'])
                                 # pm.addMetaParam(pfName, paramArr[pnum]['pname']+"_synth", "Synth parameters in " + paramRange + " units from " + barsynth.getParam(paramArr[pnum]['pname']+"_exp", "min") + " to " + barsynth.getParam(paramArr[pnum]['pname']+"_exp", "max"))
 

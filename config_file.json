@@ -27,8 +27,8 @@
 		},
 		{
 			"pname": "cf",
-        	"minval": 0.25,
-    	    "maxval": 0.75,
+        	"minval": 500,
+    	    "maxval": 800,
 	        "nvals": 2,
 			"nargs": 1,
 	        "units": "Frequency",
