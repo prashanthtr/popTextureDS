@@ -25,7 +25,7 @@ Generating synthetic popTextures
 
 # Generate files from commandline
 
->> python3 generate.py config_file.json 
+>> python3 DSGenerator/generate.py --configfile config_file.json
 
 # Config File descriptions
 

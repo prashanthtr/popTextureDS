@@ -1,18 +1,18 @@
 {
 
-	"soundname": "pop_sound",
+	"soundname": "Pop",
 	"samplerate": 16000,
-	"numVariations": 2,
+	"chunkSecs": 2,
 	"soundDuration": 4,
-	"outPath": "pop_sound",
-	"recordFormat": "params",
+	"outPath": "PopFiles",
+	"recordFormat": "sonyGan",
 	"paramRange": "Natural",
 	"params":
 	[
 		{
 			"pname": "rate",
-			"minval": 0.5,
-			"maxval": 0.75,
+			"minval": 0.25,
+			"maxval": 0.5,
 			"nvals": 2,
 			"units": "rate = 2*exp",
 			"formula": "2**args[0]"
@@ -26,12 +26,12 @@
 			"formula": ".04*10**args[0]/args[1]"
 		},
 		{
-			"pname": "cf",
-        	"minval": 500,
-    	    "maxval": 800,
-	        "nvals": 2,
+			"pname": "cf",	
+			"minval": 440,
+    		"maxval": 880,
+	    	"nvals": 2,
 			"nargs": 1,
-	        "units": "Frequency",
+	    	"units": "Frequency",
 			"formula": "440**args[0]"
 		}
 	]
