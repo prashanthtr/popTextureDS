@@ -17,8 +17,8 @@ class PatternSynth(SI.MySoundModel) :
                 self.__addParam__("Q", .1, 50, Q,
 			lambda v :
                                 self.evSynth.setParam('Q', v))
-                self.__addParam__("rate", -10, 10, rate_exp)
-                self.__addParam__("irreg", .1, 50, irreg_exp)
+                self.__addParam__("rate_exp", -10, 10, rate_exp)
+                self.__addParam__("irreg_exp", .1, 50, irreg_exp)
 
                 self.evSynth=MyPop(cf, Q)
 
@@ -26,7 +26,7 @@ class PatternSynth(SI.MySoundModel) :
 		Override of base model method
 	'''
 	def generate(self,  durationSecs) :
-                elist=SI.noisySpacingTimeList(self.getParam("rate"), self.getParam("irreg"), durationSecs)
+                elist=SI.noisySpacingTimeList(self.getParam("rate_exp"), self.getParam("irreg_exp"), durationSecs)
                 return self.elist2signal(elist, durationSecs)
 
 
