@@ -11,14 +11,14 @@ class PatternSynth(SI.MySoundModel) :
 
                 SI.MySoundModel.__init__(self)
 		#create a dictionary of the parameters this synth will use
-                self.__addParam__("cf", 100, 2000, cf,
+                self.__addParam__("cf", 100, 2000, cf, "Center freuqnecy in hz"
 			lambda v :
 				self.evSynth.setParam('cf', v))
                 self.__addParam__("Q", .1, 50, Q,
 			lambda v :
                                 self.evSynth.setParam('Q', v))
-                self.__addParam__("rate_exp", -10, 10, rate_exp)
-                self.__addParam__("irreg_exp", .1, 50, irreg_exp)
+                self.__addParam__("rate_exp", -10, 10, rate_exp, "Exponential rate, 2**r_exp")
+                self.__addParam__("irreg_exp", .1, 50, irreg_exp, "Expotential irregularity")
 
                 self.evSynth=MyPop(cf, Q)
 

@@ -1,6 +1,6 @@
 {
 
-	"soundname": "Pop",
+	"soundname": "PopPatternSynth",
 	"samplerate": 16000,
 	"chunkSecs": 2,
 	"soundDuration": 4,
@@ -35,8 +35,8 @@
 		{
 			"user_doc": "rate of Pop sounds",
             "synth_pname": "rate_exp",
-            "synth_val": 2,
-            "synth_units": "natural"
+            "synth_val": 1,
+            "synth_units": "norm"
 		}
 	]
 }
