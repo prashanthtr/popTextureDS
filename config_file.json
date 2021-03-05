@@ -35,7 +35,7 @@
 		{
 			"user_doc": "rate of Pop sounds",
             "synth_pname": "rate_exp",
-            "synth_val": 1,
+            "synth_val": 0.5,
             "synth_units": "norm"
 		}
 	]
