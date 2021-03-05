@@ -11,7 +11,7 @@ class PatternSynth(SI.MySoundModel) :
 
                 SI.MySoundModel.__init__(self)
 		#create a dictionary of the parameters this synth will use
-                self.__addParam__("cf", 100, 2000, cf, "Center freuqnecy in hz"
+                self.__addParam__("cf", 100, 2000, cf, "Center freuqnecy in hz",
 			lambda v :
 				self.evSynth.setParam('cf', v))
                 self.__addParam__("Q", .1, 50, Q,
