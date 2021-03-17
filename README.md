@@ -1,6 +1,10 @@
 # popTextureDS
 Generating synthetic popTextures
 
+# Python requirements
+
+>> Python3.8 and above.
+
 # User instructions
 
   >> git clone https://github.com/prashanthtr/popTextureDS.git
@@ -11,13 +15,13 @@ Generating synthetic popTextures
 
   >> conda activate popTextureDS
 
-  >> python3 -m pip install -r requirements.txt --src '.'(please run twice - due to numba dependency error)
+  >> python3.8 -m pip install -r requirements.txt --src '.'
 
 # Setup and run jupyter notebook
 
 >> pip install jupyter
 
->> python3 -m ipykernel install --user --name popTextureDS
+>> python3.8 -m ipykernel install --user --name popTextureDS
 
 >> jupyter notebook
 
@@ -25,7 +29,7 @@ Generating synthetic popTextures
 
 # Generate files from commandline
 
->> python3 DSGenerator/generate.py --configfile config_file.json --outputpath NewPop
+>> python3.8 DSGenerator/generate.py --configfile config_file.json --outputpath NewPop
 
 # Config File descriptions
 
