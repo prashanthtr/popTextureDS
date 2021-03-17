@@ -15,7 +15,7 @@ Generating synthetic popTextures
 
   >> conda activate popTextureDS
 
-  >> python3.8 -m pip install -r requirements.txt --src '.'
+  >> pip install -r requirements.txt --src '.'
 
 # Setup and run jupyter notebook
 
@@ -29,7 +29,7 @@ Generating synthetic popTextures
 
 # Generate files from commandline
 
->> python3.8 DSGenerator/generate.py --configfile config_file.json --outputpath NewPop
+>> python DSGenerator/generate.py --configfile config_file.json --outputpath NewPop
 
 # Config File descriptions
 
